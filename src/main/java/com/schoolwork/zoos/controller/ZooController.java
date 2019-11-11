@@ -22,7 +22,7 @@ public class ZooController {
     // http://localhost:2019/zoos/zoos
     @GetMapping(value = "/zoos", produces = "application/json")
     ResponseEntity<?> getZoos(){
-        return new ResponseEntity<>(databaseService.getZoos, HttpStatus.OK);
+        return new ResponseEntity<>(databaseService.getZoos(), HttpStatus.OK);
     }
 
     // http://localhost:2019/zoos/{id}
@@ -34,8 +34,8 @@ public class ZooController {
 
     // http://localhost:2019/zoos/namelike/{name}
     @GetMapping(value = "/zoo/namelike/{name}", produces = "application/json")
-    ResponseEntity<?> getZooByLikeName(@PathVariable String name){
-        List<Zoo> zoos = databaseService.getZooByLikeName(name);
+    ResponseEntity<?> getZoosByLikeName(@PathVariable String name){
+        List<Zoo> zoos = databaseService.getZoosByLikeName(name);
         return new ResponseEntity<>(zoos, HttpStatus.OK);
     }
 
@@ -70,6 +70,13 @@ public class ZooController {
     @DeleteMapping(value = "/zoo/{zooid}/animals/{animalid}")
     ResponseEntity<?> removeAnimalFromZoo(@PathVariable long zooid, @PathVariable long animalid){
         databaseService.removeAnimalFromZoo(zooid, animalid);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // http://localhost:2019/zoos/zoo/{zooid}/animals/{animalid}
+    @PostMapping(value = "/zoo/{zooid}/animals/{animalid}")
+    ResponseEntity<?> addAnimalToZoo(@PathVariable long zooid, @PathVariable long animalid){
+        databaseService.addAnimalToZoo(zooid, animalid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
