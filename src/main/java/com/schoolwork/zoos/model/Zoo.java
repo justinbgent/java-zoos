@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "zoos")
-public class Zoo {
+public class Zoo extends Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +23,10 @@ public class Zoo {
     @OneToMany(mappedBy = "zoo", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("zoo")
     private List<Telephone> telephones = new ArrayList<>();
+
+    @OneToMany(mappedBy = "zoo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("zoo")
+    private List<ZooAnimals> zooanimals = new ArrayList<>();
 
     public Zoo() {
     }
@@ -61,5 +65,13 @@ public class Zoo {
 
     public void setTelephones(List<Telephone> telephones) {
         this.telephones = telephones;
+    }
+
+    public List<ZooAnimals> getZooanimals() {
+        return zooanimals;
+    }
+
+    public void setZooanimals(List<ZooAnimals> zooanimals) {
+        this.zooanimals = zooanimals;
     }
 }

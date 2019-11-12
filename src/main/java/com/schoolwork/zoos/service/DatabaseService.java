@@ -2,6 +2,7 @@ package com.schoolwork.zoos.service;
 
 import com.schoolwork.zoos.model.Animal;
 import com.schoolwork.zoos.model.Zoo;
+import com.schoolwork.zoos.model.ZooAnimals;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

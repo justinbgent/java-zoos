@@ -4,6 +4,7 @@ import com.schoolwork.zoos.controller.AnimalController;
 import com.schoolwork.zoos.model.Animal;
 import com.schoolwork.zoos.model.Telephone;
 import com.schoolwork.zoos.model.Zoo;
+import com.schoolwork.zoos.model.ZooAnimals;
 import com.schoolwork.zoos.repository.AnimalRepository;
 import com.schoolwork.zoos.repository.ZooRepository;
 import org.springframework.beans.factory.annotation.Autowired;
