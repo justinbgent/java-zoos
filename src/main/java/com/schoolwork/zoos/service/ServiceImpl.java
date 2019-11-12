@@ -1,6 +1,7 @@
 package com.schoolwork.zoos.service;
 
 import com.schoolwork.zoos.controller.AnimalController;
+import com.schoolwork.zoos.exceptions.ResourceNotFoundException;
 import com.schoolwork.zoos.model.Animal;
 import com.schoolwork.zoos.model.Telephone;
 import com.schoolwork.zoos.model.Zoo;
@@ -46,7 +47,7 @@ public class ServiceImpl implements DatabaseService {
         if (zoo != null){
             return zoo;
         }
-        throw new EntityNotFoundException("Zoo id " + id + " not found!");
+        throw new ResourceNotFoundException("Zoo id " + id + " not found!");
     }
 
     @Override
@@ -63,6 +64,10 @@ public class ServiceImpl implements DatabaseService {
     @Transactional
     @Override
     public Zoo updateZoo(long id, Zoo zoo) {
+        if (getZooById(id) == null){
+            throw new ResourceNotFoundException("Zoo Id Doesn't exist");
+        }
+
         Zoo currentZoo = getZooById(id);
 
         if (zoo.getZooanimals() != null){
@@ -90,7 +95,7 @@ public class ServiceImpl implements DatabaseService {
             zooRepo.deleteById(id);
         }
         else {
-            throw new EntityNotFoundException("Zoo id " + id + " not found!");
+            throw new ResourceNotFoundException("Zoo id " + id + " not found!");
         }
     }
 
@@ -98,9 +103,9 @@ public class ServiceImpl implements DatabaseService {
     @Override
     public void removeAnimalFromZoo(long zooid, long animalid) {
         animalRepo.findById(animalid).orElseThrow(() ->
-                new EntityNotFoundException("Animal id " + animalid + " not found!"));
+                new ResourceNotFoundException("Animal id " + animalid + " not found!"));
         zooRepo.findById(zooid).orElseThrow(() ->
-                new EntityNotFoundException("Animal id " + animalid + " not found!"));
+                new ResourceNotFoundException("Animal id " + animalid + " not found!"));
 
         animalRepo.deleteZooAnimals(zooid, animalid);
     }
@@ -109,9 +114,9 @@ public class ServiceImpl implements DatabaseService {
     @Override
     public Animal addAnimalToZoo(long zooid, long animalid) {
         animalRepo.findById(animalid).orElseThrow(() ->
-                new EntityNotFoundException("Animal id " + animalid + " not found!"));
+                new ResourceNotFoundException("Animal id " + animalid + " not found!"));
         zooRepo.findById(zooid).orElseThrow(() ->
-                new EntityNotFoundException("Animal id " + animalid + " not found!"));
+                new ResourceNotFoundException("Animal id " + animalid + " not found!"));
 
         Animal newAnimal = animalRepo.findByAnimalid(animalid);
 
