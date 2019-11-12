@@ -7,12 +7,17 @@ import com.schoolwork.zoos.model.Zoo;
 import com.schoolwork.zoos.model.ZooAnimals;
 import com.schoolwork.zoos.repository.AnimalRepository;
 import com.schoolwork.zoos.repository.ZooRepository;
+import com.schoolwork.zoos.view.AnimalsCountZoos;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Service(value = "databaseService")
 public class ServiceImpl implements DatabaseService {
     @Autowired
     private AnimalRepository animalRepo;
@@ -21,8 +26,8 @@ public class ServiceImpl implements DatabaseService {
     private ZooRepository zooRepo;
 
     @Override
-    public ZooAnimals getCountOfAnimalPresenceAtZoos() {
-        return ;
+    public List<AnimalsCountZoos> getCountOfAnimalPresenceAtZoos() {
+        return animalRepo.getCountAnimalsAtZoos();
     }
 
     @Override
@@ -36,8 +41,10 @@ public class ServiceImpl implements DatabaseService {
 
     @Override
     public Zoo getZooById(long id) {
-        if (zooRepo.findById(id).isPresent()){
-            return zooRepo.findById(id).get();
+        Zoo zoo = zooRepo.findByZooid(id);
+
+        if (zoo != null){
+            return zoo;
         }
         throw new EntityNotFoundException("Zoo id " + id + " not found!");
     }
@@ -47,19 +54,20 @@ public class ServiceImpl implements DatabaseService {
         return zooRepo.findByZoonameContainingIgnoreCase(name);
     }
 
+    @Transactional
     @Override
     public Zoo addZoo(Zoo zoo) {
         return zooRepo.save(zoo);
     }
 
+    @Transactional
     @Override
     public Zoo updateZoo(long id, Zoo zoo) {
         Zoo currentZoo = getZooById(id);
 
-        if (zoo.getAnimals() != null && !zoo.getAnimals().isEmpty()){
-            for (Animal a: zoo.getAnimals()){
-                currentZoo.getAnimals().add(a);
-            }
+        if (zoo.getZooanimals() != null){
+            for (ZooAnimals za : zoo.getZooanimals())
+            currentZoo.getZooanimals().add(za);
         }
 
         if (zoo.getTelephones() != null && !zoo.getTelephones().isEmpty()){
@@ -75,36 +83,39 @@ public class ServiceImpl implements DatabaseService {
         return zooRepo.save(currentZoo);
     }
 
+    @Transactional
     @Override
     public void deleteZoo(long id) {
         if (getZooById(id) != null){
             zooRepo.deleteById(id);
-            //zooRepo.delete(getZooById(id));
         }
         else {
             throw new EntityNotFoundException("Zoo id " + id + " not found!");
         }
     }
 
+    @Transactional
     @Override
     public void removeAnimalFromZoo(long zooid, long animalid) {
-        List<Animal> zooAnimals = getZooById(zooid).getAnimals();
+        animalRepo.findById(animalid).orElseThrow(() ->
+                new EntityNotFoundException("Animal id " + animalid + " not found!"));
+        zooRepo.findById(zooid).orElseThrow(() ->
+                new EntityNotFoundException("Animal id " + animalid + " not found!"));
 
-        for (Animal a: zooAnimals){
-            if (a.getAnimalid() == animalid){
-                zooAnimals.remove(a);
-            }
-        }
+        animalRepo.deleteZooAnimals(zooid, animalid);
     }
 
+    @Transactional
     @Override
     public Animal addAnimalToZoo(long zooid, long animalid) {
-        List<Animal> zooAnimals = getZooById(zooid).getAnimals();
+        animalRepo.findById(animalid).orElseThrow(() ->
+                new EntityNotFoundException("Animal id " + animalid + " not found!"));
+        zooRepo.findById(zooid).orElseThrow(() ->
+                new EntityNotFoundException("Animal id " + animalid + " not found!"));
 
-        for (Animal a: zooAnimals){
-            if (a.getAnimalid() == animalid){
-                zooAnimals.remove(a);
-            }
-        }
+        Animal newAnimal = animalRepo.findByAnimalid(animalid);
+
+        animalRepo.insertZooAnimals(zooid, animalid);
+        return newAnimal;
     }
 }

@@ -25,14 +25,14 @@ public class ZooController {
         return new ResponseEntity<>(databaseService.getZoos(), HttpStatus.OK);
     }
 
-    // http://localhost:2019/zoos/{id}
+    // http://localhost:2019/zoos/zoo/{id}
     @GetMapping(value = "/zoo/{id}", produces = "application/json")
     ResponseEntity<?> getZooById(@PathVariable long id){
         Zoo zoo = databaseService.getZooById(id);
         return new ResponseEntity<>(zoo, HttpStatus.OK);
     }
 
-    // http://localhost:2019/zoos/namelike/{name}
+    // http://localhost:2019/zoos/zoo/namelike/{name}
     @GetMapping(value = "/zoo/namelike/{name}", produces = "application/json")
     ResponseEntity<?> getZoosByLikeName(@PathVariable String name){
         List<Zoo> zoos = databaseService.getZoosByLikeName(name);

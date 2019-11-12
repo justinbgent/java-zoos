@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "animals")
+@JsonIgnoreProperties("animalzoos")
 public class Animal extends Auditable {
 
     @Id
@@ -16,12 +17,12 @@ public class Animal extends Auditable {
 
     private String animaltype;
 
-    @ManyToMany
-    @JoinTable(name = "zooanimals", joinColumns = @JoinColumn(name = "animalid"), inverseJoinColumns = @JoinColumn(name = "zooid"))
-    @JsonIgnoreProperties("animals")
-    private List<Zoo> zoos = new ArrayList<>();
+//    @ManyToMany
+//    @JoinTable(name = "zooanimals", joinColumns = @JoinColumn(name = "animalid"), inverseJoinColumns = @JoinColumn(name = "zooid"))
+//    @JsonIgnoreProperties(value = {"animals", "zooanimals"})
+//    private List<Zoo> zoos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("animal")
     private List<ZooAnimals> zooanimals = new ArrayList<>();
 
@@ -48,11 +49,11 @@ public class Animal extends Auditable {
         this.animaltype = animaltype;
     }
 
-    public List<Zoo> getZoos() {
-        return zoos;
+    public List<ZooAnimals> getZooanimals() {
+        return zooanimals;
     }
 
-    public void setZoos(List<Zoo> zoos) {
-        this.zoos = zoos;
+    public void setZooanimals(List<ZooAnimals> zooanimals) {
+        this.zooanimals = zooanimals;
     }
 }

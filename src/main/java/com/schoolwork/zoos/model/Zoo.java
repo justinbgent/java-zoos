@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "zoos")
+//@JsonIgnoreProperties({"zooanimals", "animalzoos"})
 public class Zoo extends Auditable{
 
     @Id
@@ -16,9 +17,9 @@ public class Zoo extends Auditable{
 
     private String zooname;
 
-    @ManyToMany(mappedBy = "zoos")
-    @JsonIgnoreProperties("zoos")
-    private List<Animal> animals = new ArrayList<>();
+//    @ManyToMany(mappedBy = "zoos")
+//    @JsonIgnoreProperties(value = {"zoos", "zooanimals"})
+//    private List<Animal> animals = new ArrayList<>();
 
     @OneToMany(mappedBy = "zoo", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("zoo")
@@ -49,14 +50,6 @@ public class Zoo extends Auditable{
 
     public void setZooname(String zooname) {
         this.zooname = zooname;
-    }
-
-    public List<Animal> getAnimals() {
-        return animals;
-    }
-
-    public void setAnimals(List<Animal> animals) {
-        this.animals = animals;
     }
 
     public List<Telephone> getTelephones() {
