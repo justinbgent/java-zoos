@@ -36,7 +36,6 @@ public class User extends Auditable
 
     public User(String username,
                 String password,
-                String primaryemail,
                 List<UserRoles> userRoles)
     {
         setUsername(username);
